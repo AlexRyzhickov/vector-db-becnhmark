@@ -10,9 +10,16 @@
 HERE := $(CURDIR)
 HDF5 ?= $(HERE)/deep-image-96-angular.hdf5
 RESULTS_DIR ?= $(HERE)/results
+TOOLS_DIR ?= $(HERE)/.tools
 
 # Casper dev token from README. Override only if you've rotated tokens.
 API_TOKEN ?= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTMyOTAzNTMsImZyZWUiOnRydWV9.GxqiVw5kPzmPb25vo2CMOEwnBhjTH_GTAHeDg_nhlIQ
+
+# Server binaries versions/URLs (override on demand).
+CASPER_VERSION ?= v0.1.0
+QDRANT_VERSION ?= v1.17.0
+CASPER_TARBALL_URL ?= https://github.com/casper-vdb/casper/releases/download/$(CASPER_VERSION)/casper-x86_64-unknown-linux-gnu.tar.gz
+QDRANT_TARBALL_URL ?= https://github.com/qdrant/qdrant/releases/download/$(QDRANT_VERSION)/qdrant-x86_64-unknown-linux-gnu.tar.gz
 
 # Goose load knobs (forwarded to the goose binary via env).
 USERS ?= 32
@@ -26,11 +33,14 @@ SEARCH_LIMITS ?= 10 100 1000 10000 100000
 SERVER_NUMA_NODE ?=
 LOAD_NUMA_NODE ?=
 
-.PHONY: build-tools bench-casper bench-qdrant clean help
+.PHONY: build-tools download-casper download-qdrant download-binaries update-binaries bench-casper bench-qdrant clean help
 
 help:
 	@echo "Targets:"
 	@echo "  build-tools    — compile local Rust binaries in ./import and ./goose"
+	@echo "  download-casper — download/update ./casper/casper binary"
+	@echo "  download-qdrant — download/update ./qdrant/qdrant binary"
+	@echo "  download-binaries — download/update both server binaries"
 	@echo "  bench-casper   — full end-to-end bench against Casper (f32 + i8)"
 	@echo "  bench-qdrant   — full end-to-end bench against Qdrant (no-quant + int8)"
 	@echo "  clean          — remove ./results/ and per-server storage"
@@ -43,10 +53,32 @@ help:
 	@echo "  SEARCH_LIMITS=$(SEARCH_LIMITS)"
 	@echo "  SERVER_NUMA_NODE=$(SERVER_NUMA_NODE)  (empty = no pinning)"
 	@echo "  LOAD_NUMA_NODE=$(LOAD_NUMA_NODE)    (empty = no pinning)"
+	@echo "  CASPER_VERSION=$(CASPER_VERSION)"
+	@echo "  QDRANT_VERSION=$(QDRANT_VERSION)"
 
 build-tools:
 	$(MAKE) -C $(HERE)/import build
 	$(MAKE) -C $(HERE)/goose build
+
+download-casper:
+	@mkdir -p $(TOOLS_DIR) $(HERE)/casper
+	@echo "Downloading Casper from $(CASPER_TARBALL_URL)"
+	@curl -fL --retry 3 --retry-delay 2 -o $(TOOLS_DIR)/casper.tar.gz "$(CASPER_TARBALL_URL)"
+	@tar -xzf $(TOOLS_DIR)/casper.tar.gz -C $(TOOLS_DIR)
+	@install -m 0755 $(TOOLS_DIR)/casper $(HERE)/casper/casper
+	@rm -f $(TOOLS_DIR)/casper.tar.gz $(TOOLS_DIR)/casper
+	@echo "Installed $(HERE)/casper/casper"
+
+download-qdrant:
+	@mkdir -p $(TOOLS_DIR) $(HERE)/qdrant
+	@echo "Downloading Qdrant from $(QDRANT_TARBALL_URL)"
+	@curl -fL --retry 3 --retry-delay 2 -o $(TOOLS_DIR)/qdrant.tar.gz "$(QDRANT_TARBALL_URL)"
+	@tar -xzf $(TOOLS_DIR)/qdrant.tar.gz -C $(TOOLS_DIR)
+	@install -m 0755 $(TOOLS_DIR)/qdrant $(HERE)/qdrant/qdrant
+	@rm -f $(TOOLS_DIR)/qdrant.tar.gz $(TOOLS_DIR)/qdrant
+	@echo "Installed $(HERE)/qdrant/qdrant"
+
+download-binaries: download-casper download-qdrant
 
 bench-casper:
 	@HDF5=$(HDF5) RESULTS_DIR=$(RESULTS_DIR) API_TOKEN=$(API_TOKEN) \
