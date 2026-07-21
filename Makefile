@@ -85,7 +85,7 @@ download-binaries: download-casper download-qdrant
 
 package-linux: download-binaries build-tools
 	@echo "Packing $(DIST_ARCHIVE)"
-	@tar -C "$(HERE)/.." -czf "$(HERE)/../$(DIST_ARCHIVE)" \
+	@tar -C "$(HERE)/.." -czf "$(HERE)/$(DIST_ARCHIVE)" \
 		--exclude="vector-db-becnhmark/.git" \
 		--exclude="vector-db-becnhmark/.idea" \
 		--exclude="vector-db-becnhmark/results" \
@@ -93,7 +93,7 @@ package-linux: download-binaries build-tools
 		--exclude="vector-db-becnhmark/target" \
 		--exclude="vector-db-becnhmark/*/target" \
 		"vector-db-becnhmark"
-	@echo "Archive created: $(HERE)/../$(DIST_ARCHIVE)"
+	@echo "Archive created: $(HERE)/$(DIST_ARCHIVE)"
 
 bench-casper:
 	@HDF5=$(HDF5) RESULTS_DIR=$(RESULTS_DIR) API_TOKEN=$(API_TOKEN) \
