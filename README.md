@@ -1,24 +1,36 @@
 # Vector DB Benchmark
 
-This repository is a high-load benchmark harness for Casper and Qdrant.  
-Compared versions: Casper `v0.1.0` vs Qdrant `v1.17.0`.  
-The load-testing layer in this project is built on top of the [Goose](https://github.com/tag1consulting/goose) library.
+This repository is a high-load benchmark harness for Casper and Qdrant. Compared versions: Casper `v0.1.0` vs Qdrant `v1.17.0`. The load-testing layer in this project is built on top of the [Goose](https://github.com/tag1consulting/goose) library.
 
 All logs and benchmark outputs are saved under `results/`.
 
-## Download and extract
+## Download and Extract
 
-Download:
+1) Download the release archive:
 
 ```bash
 wget https://github.com/AlexRyzhickov/vector-db-becnhmark/releases/download/v0.1.0/vector-db-becnhmark-unknown-linux-gnu.tar.gz
 ```
 
-Extract:
+2) Extract:
 
 ```bash
 tar -xzf vector-db-becnhmark-unknown-linux-gnu.tar.gz
 ```
+
+3) Go to the project directory:
+
+```bash
+cd vector-db-becnhmark
+```
+
+4) Download dataset:
+
+```bash
+# Alternative: make download-dataset-deep-image-96-angular.hdf5
+wget http://ann-benchmarks.com/deep-image-96-angular.hdf5
+```
+
 
 ## Run Benchmarks
 
@@ -34,9 +46,9 @@ Qdrant:
 make bench-qdrant
 ```
 
-## Run benchmarks with advanced params
+## Run Benchmarks with Advanced Parameters
 
-### NUMA pinning
+### NUMA Pinning
 
 Casper:
 
@@ -50,33 +62,38 @@ Qdrant:
 make bench-qdrant SERVER_NUMA_NODE=1 LOAD_NUMA_NODE=0
 ```
 
-### Concurrency examples
+### Concurrency Examples
 
-Casper with higher concurrency:
+Casper (higher concurrency):
 
 ```bash
 make bench-casper USERS=64
 ```
 
-Qdrant with higher concurrency:
+Qdrant (higher concurrency):
 
 ```bash
 make bench-qdrant USERS=64
 ```
 
-Casper with both concurrency and NUMA pinning:
+Casper (higher concurrency + NUMA pinning):
 
 ```bash
 make bench-casper USERS=64 SERVER_NUMA_NODE=1 LOAD_NUMA_NODE=0
 ```
 
-Qdrant with both concurrency and NUMA pinning:
+Qdrant (higher concurrency + NUMA pinning):
 
 ```bash
 make bench-qdrant USERS=64 SERVER_NUMA_NODE=1 LOAD_NUMA_NODE=0
 ```
 
-### Overrides example
+### Overrides Example
+
+- `HDF5` — path to the input dataset file used for import and query pool generation.
+- `USERS` — number of concurrent Goose virtual users (load level).
+- `RUN_TIME_SECONDS` — duration of each benchmark run in seconds.
+- `SEARCH_LIMITS` — list of `k` values (`top-k`) to benchmark sequentially.
 
 ```bash
 make bench-casper \
@@ -89,6 +106,6 @@ make bench-casper \
 ## Prerequisites
 
 - Bash, `curl`, `make`
-- Optional: Rust toolchain (`cargo`). Only needed to build helper binaries from source
+- Optional: Rust toolchain (`cargo`) (only needed to build helper binaries from source)
 - Optional: `numactl` (for NUMA pinning)
 - Dataset file (default): `deep-image-96-angular.hdf5` in this directory
