@@ -11,6 +11,7 @@ HERE := $(CURDIR)
 HDF5 ?= $(HERE)/deep-image-96-angular.hdf5
 RESULTS_DIR ?= $(HERE)/results
 TOOLS_DIR ?= $(HERE)/.tools
+DIST_ARCHIVE ?= vector-db-becnhmark-unknown-linux-gnu.tar.gz
 
 # Casper dev token from README. Override only if you've rotated tokens.
 API_TOKEN ?= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTMyOTAzNTMsImZyZWUiOnRydWV9.GxqiVw5kPzmPb25vo2CMOEwnBhjTH_GTAHeDg_nhlIQ
@@ -33,7 +34,7 @@ SEARCH_LIMITS ?= 10 100 1000 10000 100000
 SERVER_NUMA_NODE ?=
 LOAD_NUMA_NODE ?=
 
-.PHONY: build-tools download-casper download-qdrant download-binaries update-binaries bench-casper bench-qdrant clean help
+.PHONY: build-tools download-casper download-qdrant download-binaries package-linux bench-casper bench-qdrant clean help
 
 help:
 	@echo "Targets:"
@@ -41,6 +42,7 @@ help:
 	@echo "  download-casper — download/update ./casper/casper binary"
 	@echo "  download-qdrant — download/update ./qdrant/qdrant binary"
 	@echo "  download-binaries — download/update both server binaries"
+	@echo "  package-linux  — build tools + binaries and create *-unknown-linux-gnu.tar.gz"
 	@echo "  bench-casper   — full end-to-end bench against Casper (f32 + i8)"
 	@echo "  bench-qdrant   — full end-to-end bench against Qdrant (no-quant + int8)"
 	@echo "  clean          — remove ./results/ and per-server storage"
@@ -55,6 +57,7 @@ help:
 	@echo "  LOAD_NUMA_NODE=$(LOAD_NUMA_NODE)    (empty = no pinning)"
 	@echo "  CASPER_VERSION=$(CASPER_VERSION)"
 	@echo "  QDRANT_VERSION=$(QDRANT_VERSION)"
+	@echo "  DIST_ARCHIVE=$(DIST_ARCHIVE)"
 
 build-tools:
 	$(MAKE) -C $(HERE)/import build
@@ -79,6 +82,18 @@ download-qdrant:
 	@echo "Installed $(HERE)/qdrant/qdrant"
 
 download-binaries: download-casper download-qdrant
+
+package-linux: download-binaries build-tools
+	@echo "Packing $(DIST_ARCHIVE)"
+	@tar -C "$(HERE)/.." -czf "$(HERE)/../$(DIST_ARCHIVE)" \
+		--exclude="vector-db-becnhmark/.git" \
+		--exclude="vector-db-becnhmark/.idea" \
+		--exclude="vector-db-becnhmark/results" \
+		--exclude="vector-db-becnhmark/.tools" \
+		--exclude="vector-db-becnhmark/target" \
+		--exclude="vector-db-becnhmark/*/target" \
+		"vector-db-becnhmark"
+	@echo "Archive created: $(HERE)/../$(DIST_ARCHIVE)"
 
 bench-casper:
 	@HDF5=$(HDF5) RESULTS_DIR=$(RESULTS_DIR) API_TOKEN=$(API_TOKEN) \
