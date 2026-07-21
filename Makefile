@@ -85,14 +85,17 @@ download-binaries: download-casper download-qdrant
 
 package-linux: download-binaries build-tools
 	@echo "Packing $(DIST_ARCHIVE)"
-	@tar -C "$(HERE)/.." -czf "$(HERE)/$(DIST_ARCHIVE)" \
-		--exclude="vector-db-becnhmark/.git" \
-		--exclude="vector-db-becnhmark/.idea" \
-		--exclude="vector-db-becnhmark/results" \
-		--exclude="vector-db-becnhmark/.tools" \
-		--exclude="vector-db-becnhmark/target" \
-		--exclude="vector-db-becnhmark/*/target" \
-		"vector-db-becnhmark"
+	@tmp_archive="$(HERE)/../.$(DIST_ARCHIVE).tmp"; \
+		rm -f "$$tmp_archive"; \
+		tar -C "$(HERE)/.." -czf "$$tmp_archive" \
+			--exclude="vector-db-becnhmark/.git" \
+			--exclude="vector-db-becnhmark/.idea" \
+			--exclude="vector-db-becnhmark/results" \
+			--exclude="vector-db-becnhmark/.tools" \
+			--exclude="vector-db-becnhmark/target" \
+			--exclude="vector-db-becnhmark/*/target" \
+			"vector-db-becnhmark"; \
+		mv -f "$$tmp_archive" "$(HERE)/$(DIST_ARCHIVE)"
 	@echo "Archive created: $(HERE)/$(DIST_ARCHIVE)"
 
 bench-casper:
