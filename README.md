@@ -28,6 +28,7 @@ cd vector-db-becnhmark
 
 ```bash
 # Alternative: make download-dataset-deep-image-96-angular.hdf5
+
 wget http://ann-benchmarks.com/deep-image-96-angular.hdf5
 ```
 
