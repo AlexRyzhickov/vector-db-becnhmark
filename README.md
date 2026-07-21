@@ -1,7 +1,7 @@
 # Vector DB Benchmark
 
-This repository is a high-load benchmark harness for Casper and Qdrant.
-Compared versions: Casper `v0.1.0` vs Qdrant `v1.17.0`.
+This repository is a high-load benchmark harness for Casper and Qdrant.  
+Compared versions: Casper `v0.1.0` vs Qdrant `v1.17.0`.  
 The load-testing layer in this project is built on top of the [Goose](https://github.com/tag1consulting/goose) library.
 
 All logs and benchmark outputs are saved under `results/`.
