@@ -22,6 +22,7 @@ CASPER_VERSION ?= v0.1.0
 QDRANT_VERSION ?= v1.17.0
 CASPER_TARBALL_URL ?= https://github.com/casper-vdb/casper/releases/download/$(CASPER_VERSION)/casper-x86_64-unknown-linux-gnu.tar.gz
 QDRANT_TARBALL_URL ?= https://github.com/qdrant/qdrant/releases/download/$(QDRANT_VERSION)/qdrant-x86_64-unknown-linux-gnu.tar.gz
+HDF5_URL ?= http://ann-benchmarks.com/deep-image-96-angular.hdf5
 
 # Goose load knobs (forwarded to the goose binary via env).
 USERS ?= 32
@@ -35,11 +36,12 @@ SEARCH_LIMITS ?= 10 100 1000 10000 100000
 SERVER_NUMA_NODE ?=
 LOAD_NUMA_NODE ?=
 
-.PHONY: build-tools download-casper download-qdrant download-binaries package-linux bench-casper bench-qdrant clean help
+.PHONY: build-tools download-dataset-deep-image-96-angular.hdf5 download-casper download-qdrant download-binaries package-linux bench-casper bench-qdrant clean help
 
 help:
 	@echo "Targets:"
 	@echo "  build-tools    — compile local Rust binaries in ./import and ./goose"
+	@echo "  download-dataset-deep-image-96-angular.hdf5 — download deep-image-96-angular.hdf5"
 	@echo "  download-casper — download/update ./casper/casper binary"
 	@echo "  download-qdrant — download/update ./qdrant/qdrant binary"
 	@echo "  download-binaries — download/update both server binaries"
@@ -58,11 +60,16 @@ help:
 	@echo "  LOAD_NUMA_NODE=$(LOAD_NUMA_NODE)    (empty = no pinning)"
 	@echo "  CASPER_VERSION=$(CASPER_VERSION)"
 	@echo "  QDRANT_VERSION=$(QDRANT_VERSION)"
+	@echo "  HDF5_URL=$(HDF5_URL)"
 	@echo "  DIST_ARCHIVE=$(DIST_ARCHIVE)"
 
 build-tools:
 	$(MAKE) -C $(HERE)/import build
 	$(MAKE) -C $(HERE)/goose build
+
+download-dataset-deep-image-96-angular.hdf5:
+	@echo "Downloading dataset from $(HDF5_URL)"
+	@wget "$(HDF5_URL)"
 
 download-casper:
 	@mkdir -p $(TOOLS_DIR) $(HERE)/casper
