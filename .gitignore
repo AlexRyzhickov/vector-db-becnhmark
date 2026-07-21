@@ -7,3 +7,4 @@ goose/target/
 import/target/
 
 *.hdf5
+*.tar.gz
