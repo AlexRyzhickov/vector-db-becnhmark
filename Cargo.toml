@@ -1,0 +1,3 @@
+[workspace]
+members = ["goose", "import"]
+resolver = "2"
