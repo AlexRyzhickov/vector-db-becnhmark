@@ -48,7 +48,7 @@ build-tools:
 	$(MAKE) -C $(HERE)/import build
 	$(MAKE) -C $(HERE)/goose build
 
-bench-casper: build-tools
+bench-casper:
 	@HDF5=$(HDF5) RESULTS_DIR=$(RESULTS_DIR) API_TOKEN=$(API_TOKEN) \
 	 USERS=$(USERS) RUN_TIME_SECONDS=$(RUN_TIME_SECONDS) \
 	 SEARCH_LIMITS="$(SEARCH_LIMITS)" \
@@ -56,7 +56,7 @@ bench-casper: build-tools
 	 LOAD_NUMA_NODE="$(LOAD_NUMA_NODE)" \
 	 ./scripts/bench_casper.sh
 
-bench-qdrant: build-tools
+bench-qdrant:
 	@HDF5=$(HDF5) RESULTS_DIR=$(RESULTS_DIR) \
 	 USERS=$(USERS) RUN_TIME_SECONDS=$(RUN_TIME_SECONDS) \
 	 SEARCH_LIMITS="$(SEARCH_LIMITS)" \
