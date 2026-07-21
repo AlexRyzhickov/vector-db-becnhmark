@@ -11,7 +11,7 @@ HERE := $(CURDIR)
 HDF5 ?= $(HERE)/deep-image-96-angular.hdf5
 RESULTS_DIR ?= $(HERE)/results
 TOOLS_DIR ?= $(HERE)/.tools
-DIST_ARCHIVE ?= vector-db-becnhmark-unknown-linux-gnu.tar.gz
+DIST_ARCHIVE ?= vector-db-benchmark-unknown-linux-gnu.tar.gz
 
 # Casper dev token from README. Override only if you've rotated tokens.
 API_TOKEN ?= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTMyOTAzNTMsImZyZWUiOnRydWV9.GxqiVw5kPzmPb25vo2CMOEwnBhjTH_GTAHeDg_nhlIQ
@@ -96,13 +96,13 @@ package-linux: download-binaries build-tools
 	@tmp_archive="$(HERE)/../.$(DIST_ARCHIVE).tmp"; \
 		rm -f "$$tmp_archive"; \
 		tar -C "$(HERE)/.." -czf "$$tmp_archive" \
-			--exclude="vector-db-becnhmark/.git" \
-			--exclude="vector-db-becnhmark/.idea" \
-			--exclude="vector-db-becnhmark/results" \
-			--exclude="vector-db-becnhmark/.tools" \
-			--exclude="vector-db-becnhmark/target" \
-			--exclude="vector-db-becnhmark/*/target" \
-			"vector-db-becnhmark"; \
+			--exclude="vector-db-benchmark/.git" \
+			--exclude="vector-db-benchmark/.idea" \
+			--exclude="vector-db-benchmark/results" \
+			--exclude="vector-db-benchmark/.tools" \
+			--exclude="vector-db-benchmark/target" \
+			--exclude="vector-db-benchmark/*/target" \
+			"vector-db-benchmark"; \
 		mv -f "$$tmp_archive" "$(HERE)/$(DIST_ARCHIVE)"
 	@echo "Archive created: $(HERE)/$(DIST_ARCHIVE)"
 
