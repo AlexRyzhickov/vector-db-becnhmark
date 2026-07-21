@@ -16,7 +16,8 @@ DIST_ARCHIVE ?= vector-db-becnhmark-unknown-linux-gnu.tar.gz
 # Casper dev token from README. Override only if you've rotated tokens.
 API_TOKEN ?= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTMyOTAzNTMsImZyZWUiOnRydWV9.GxqiVw5kPzmPb25vo2CMOEwnBhjTH_GTAHeDg_nhlIQ
 
-# Server binaries versions/URLs (override on demand).
+# Compared vector DB versions in this benchmark (override on demand):
+#   Casper v0.1.0 vs Qdrant v1.17.0
 CASPER_VERSION ?= v0.1.0
 QDRANT_VERSION ?= v1.17.0
 CASPER_TARBALL_URL ?= https://github.com/casper-vdb/casper/releases/download/$(CASPER_VERSION)/casper-x86_64-unknown-linux-gnu.tar.gz
